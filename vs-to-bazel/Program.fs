@@ -30,10 +30,10 @@ let task path = async {
       let mutable m = projectsRegex.Match sln
 
       while m.Success do
-        let projectHostGuid = Guid.Parse(m.Groups.[1].Value)
+        let projectHostGuid = Guid.Parse (m.Groups.[1].Value)
         let projectName = m.Groups.[2].Value
         let relativePath = m.Groups.[3].Value
-        let projectGuid = Guid.Parse(m.Groups.[4].Value)
+        let projectGuid = Guid.Parse (m.Groups.[4].Value)
 
         yield
           {
@@ -57,17 +57,23 @@ let task path = async {
 
   for project in solution.Projects do
     let path = unixify project.RelativePath
+
+    printfn "%s" ("Processing " + path)
+
     let! xml = Files.read path
 
     // The process should work regardless of the namespace
-    let xml = xml.Replace(" xmlns=\"", " notxmlns=\"")
+    let xml = xml.Replace (" xmlns=\"", " notxmlns=\"")
 
-    let doc = XmlDocument()
+    let doc = XmlDocument ()
 
     doc.LoadXml xml
 
     let projectName =
-      (doc.SelectSingleNode "/Project/PropertyGroup/ProjectName").InnerText
+      try
+        (doc.SelectSingleNode "/Project/PropertyGroup/ProjectName").InnerText
+      with _ ->
+        Path.GetFileNameWithoutExtension path
 
     let itemGroupNodes =
       doc.SelectNodes "/Project/ItemGroup"
