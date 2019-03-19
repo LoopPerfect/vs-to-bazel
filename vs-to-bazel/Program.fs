@@ -75,6 +75,26 @@ let task path = async {
       with _ ->
         Path.GetFileNameWithoutExtension path
 
+    let propertyGroupNodes =
+      doc.SelectNodes "/Project/PropertyGroup"
+      |> Seq.cast<XmlNode>
+
+    let configurationGroups =
+      propertyGroupNodes
+      |> Seq.filter (fun node ->
+        let label = node.Attributes.["Label"]
+        isNull label |> not && label.InnerText = "Configuration"
+      )
+      |> Seq.map (fun node ->
+        let configurationType =
+          (node.SelectSingleNode "./ConfigurationType").InnerText
+
+        {
+          ConfigurationType = configurationType
+        }
+      )
+      |> Seq.toList
+
     let itemGroupNodes =
       doc.SelectNodes "/Project/ItemGroup"
       |> Seq.cast<XmlNode>
@@ -119,13 +139,29 @@ let task path = async {
           (compileNode.SelectSingleNode "./AdditionalIncludeDirectories").InnerText
           |> List.singleton
 
+        let linkNode =
+          match x.SelectSingleNode "./Link" with
+          | null -> None
+          | x ->
+            Some
+              {
+                TargetMachine =
+                  (x.SelectSingleNode "./TargetMachine").InnerText
+                SubSystem =
+                  (x.SelectSingleNode "./SubSystem").InnerText
+                AdditionalDependencies =
+                  (x.SelectSingleNode "./AdditionalDependencies").InnerText
+              }
+
         {
           Condition = Map.empty
           Compile =
-            {
-              Optimization = optimization
-              AdditionalIncludeDirs = additionalIncludeDirs
-            }
+            Some
+              {
+                Optimization = optimization
+                AdditionalIncludeDirs = additionalIncludeDirs
+              }
+          Link = linkNode
         }
       )
       |> Seq.toList
@@ -133,14 +169,17 @@ let task path = async {
     let proj =
       {
         Name = projectName
+        ConfigurationGroups = configurationGroups
         ItemGroups =
           itemGroups
           |> Seq.toList
         ItemDefinitionGroups = itemDefinitionGroups
       }
 
+    printfn "%O" proj
+
     let bazel =
-      Bazel.render proj
+      Bazel.render solution proj
 
     let buildFilePath =
       Path.Combine (Path.GetDirectoryName path, "BUILD.bazel")
