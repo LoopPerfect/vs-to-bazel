@@ -1,0 +1,11 @@
+language: csharp
+mono: none
+dotnet: none
+os:
+ - windows
+script:
+ - choco install wget
+ - choco install dotnetcore-sdk
+ - choco install bazel
+ - dotnet restore
+ - ./integration-test.sh
