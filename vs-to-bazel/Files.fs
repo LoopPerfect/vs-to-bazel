@@ -18,6 +18,6 @@ let write (path : string) (content : string) = async {
 }
 
 let touch (path : string) =
-  use myFileStream = File.Open(path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite)
-  myFileStream.Close()
+  use myFileStream = File.Open (path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite)
+  myFileStream.Close ()
   File.SetLastWriteTimeUtc (path, DateTime.UtcNow)

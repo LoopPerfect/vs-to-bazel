@@ -1,3 +1,9 @@
 # vs-to-bazel
 
-It converts Visual Studio projects to Bazel
+Convert Visual Studio projects to Bazel.
+
+## Usage
+
+```
+dotnet run --project ./vs-to-bazel -- ../path/to/your/Solution.sln
+```
