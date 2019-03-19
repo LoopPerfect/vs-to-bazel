@@ -10,3 +10,4 @@ rm **/BUILD.bazel
 dotnet run --project ../../vs-to-bazel -- ./SimpleApp.sln
 
 bazel build ...
+bazel clean
