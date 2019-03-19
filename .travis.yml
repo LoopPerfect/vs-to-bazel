@@ -9,3 +9,4 @@ script:
  - choco install bazel
  - dotnet restore
  - ./integration-test.sh
+ - ./warp-bundle.sh
