@@ -14,7 +14,8 @@ deploy:
   provider: releases
   api_key:
     secure: VWEoAvZJ7PbQKhsmBDOJVHLdwcUVrLJzPQKtO4JgBNLGzCyAjc8rKunpdGbGfH6Q3GiN5O6l49YHOwicuLQVzKJRB5zmrEAdEwr2a3VZgktTtCnK9kBRmuNj27QO4HSxPRj5z5GxI25LGvtT1aeYYgv6AVEVydVvxeDVr/YAxfHvR8pucz5Rw6MWJyz0VnDZwMvWdnHW/nbuWEImozyatWoU8eHoN/3ZpwgjjVC9rnGSmU/EL5yCIWpIgCPQPbh0D1A8MaGenU3VH8Fl+dri5giM3b5Yp24W/LUWOwNjLIr5dqtGVDwDqHX4p1EM5JLOfZMT5mvyrydWi1R0dUcRpNlWdgrstru6VgbZUoboHdRQJarBV5hN3sNxbwEqb6HwVpcP1r4gLK6y8KXfIRRXXqnr19q1ZbpTG7RK2XSXHKFUTNnbUK54oNdFRL4SdA6LwjSk66aCuKSDTe+1GKeHxNFgeT4ibs7Y6dCfQbBnk0heehas6Vb/DttaNGt+j1cB7UeicZFYfYkTws9/BX8kSi4hsQHOPncoKU7HBcIF+P1MhbJAIWd4/v2yPtFaIsRplqymPLCjNHoV5VJAxF7Mvfwb4orwC5Dok0fvLOeCrvAZXECLMnCFNza+cW2ouLxakqh2e4x45zTbeoMm75od+f8ReDq4qpGG3u8p+WY4tBk=
-  file: ./warp/vs-to-bazel.exe
+  file_glob: true
+  file: "./warp/vs-to-bazel*"
   on:
     tags: true
     all_branches: true
