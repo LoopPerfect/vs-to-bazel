@@ -2,3 +2,5 @@ bin
 obj
 BUILD.bazel
 WORKSPACE
+warp
+warp-packer.exe
