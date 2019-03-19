@@ -44,7 +44,8 @@ let render (sln : Solution) (proj : VcxProj) =
     let deps =
       proj.ItemDefinitionGroups
       |> Seq.choose (fun x -> x.Link)
-      |> Seq.collect (fun x -> x.AdditionalDependencies.Split [| ';' |])
+      |> Seq.choose (fun x -> x.AdditionalDependencies)
+      |> Seq.collect (fun x -> x.Split [| ';' |])
       |> Seq.filter (fun x -> x.StartsWith "%(" |> not)
       |> Seq.map (fun x -> x.Replace (".lib", ""))
       |> Seq.choose (fun x ->

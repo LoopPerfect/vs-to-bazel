@@ -49,9 +49,9 @@ type ClCompile =
 
 type Link =
   {
-    TargetMachine : string
-    SubSystem : string
-    AdditionalDependencies : string
+    TargetMachine : string option
+    SubSystem : string option
+    AdditionalDependencies : string option
   }
 
 type ItemDefinitionGroup =

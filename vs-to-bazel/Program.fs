@@ -127,8 +127,6 @@ let task path = async {
     let itemDefinitionGroups =
       itemDefinitionGroupNodes
       |> Seq.map (fun x ->
-        printfn "%O" x.Attributes.["Condition"].InnerText
-
         let compileNode =
           x.SelectSingleNode "./ClCompile"
 
@@ -136,8 +134,9 @@ let task path = async {
           (compileNode.SelectSingleNode "./Optimization").InnerText
 
         let additionalIncludeDirs =
-          (compileNode.SelectSingleNode "./AdditionalIncludeDirectories").InnerText
-          |> List.singleton
+          match compileNode.SelectSingleNode "./AdditionalIncludeDirectories" with
+          | null -> []
+          | x -> x.InnerText |> List.singleton
 
         let linkNode =
           match x.SelectSingleNode "./Link" with
@@ -146,11 +145,17 @@ let task path = async {
             Some
               {
                 TargetMachine =
-                  (x.SelectSingleNode "./TargetMachine").InnerText
+                  match x.SelectSingleNode "./TargetMachine" with
+                  | null -> None
+                  | x -> Some x.InnerText
                 SubSystem =
-                  (x.SelectSingleNode "./SubSystem").InnerText
+                  match x.SelectSingleNode "./SubSystem" with
+                  | null -> None
+                  | x -> Some x.InnerText
                 AdditionalDependencies =
-                  (x.SelectSingleNode "./AdditionalDependencies").InnerText
+                  match x.SelectSingleNode "./AdditionalDependencies" with
+                  | null -> None
+                  | x -> Some x.InnerText
               }
 
         {
@@ -195,7 +200,15 @@ let task path = async {
 
 [<EntryPoint>]
 let main argv =
-  task (argv.[0])
-  |> Async.RunSynchronously
+
+  if Array.length argv = 1
+  then
+    task (argv.[0])
+    |> Async.RunSynchronously
+  else
+    let executableName = 
+      System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName
+
+    printfn "%s" ("Usage: " + executableName + " <path/to/Solution.sln>")
 
   0
