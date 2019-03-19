@@ -17,5 +17,6 @@ deploy:
   file_glob: true
   file: "./warp/vs-to-bazel*"
   on:
+    repo: LoopPerfect/vs-to-bazel
     tags: true
     all_branches: true
